@@ -12,9 +12,6 @@ const random_index = ( N, bias = 1.0 ) => Math.min(N-1, Math.floor(Math.pow(Math
 //   .schedule: temperature = f(iter/num_iters)
 
 function anneal( get_proposal, set_proposal, num_iters = 100, num_epochs = 1 ) {
-  // set cooling schedule (or use default)
-  const schedule = this.schedule || ( x )=> Math.log1p(x *100)
-
   // ensure first proposal always accepted
   var cost = Infinity
 
@@ -32,7 +29,7 @@ function anneal( get_proposal, set_proposal, num_iters = 100, num_epochs = 1 ) {
       //   if cost increases, the greater the increase, the lower the accept probability.
       //   the later the iteration, the larger the multiplier, causing to a lower "annealing temperature".
       //     hence, the lower the probability of moving to a higher cost later on in the annealing process.
-      const accept_probability = Math.exp((cost - proposed_cost) * schedule(iter / num_iters))
+      const accept_probability = Math.exp((cost - proposed_cost) * this.schedule(iter / num_iters))
 
       // if chance decides, accept proposal
       const random_probability = Math.random()
@@ -44,3 +41,5 @@ function anneal( get_proposal, set_proposal, num_iters = 100, num_epochs = 1 ) {
     }
   }
 }
+// set default cooling schedule
+anneal.schedule = x => Math.log1p(x *100)
