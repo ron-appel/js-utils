@@ -29,7 +29,7 @@ function anneal( get_proposal, set_proposal, num_iters = 100, num_epochs = 1 ) {
       //   if cost increases, the greater the increase, the lower the accept probability.
       //   the later the iteration, the larger the multiplier, causing to a lower "annealing temperature".
       //     hence, the lower the probability of moving to a higher cost later on in the annealing process.
-      const accept_probability = Math.exp((cost - proposed_cost) * this.schedule(iter / num_iters))
+      const accept_probability = Math.exp((cost - proposed_cost) * anneal.schedule(iter / num_iters))
 
       // if chance decides, accept proposal
       const random_probability = Math.random()
