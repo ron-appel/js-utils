@@ -1,0 +1,76 @@
+<html>
+<head>
+<script>
+
+function init() {
+  const Dims = ['width', 'height', 'aspect-ratio', 'resolution']
+  const Prefix = ['', 'min-', 'max-']
+
+  const style = document.createElement('style')
+  document.head.appendChild(style)
+
+  Dims.forEach(function( dim ) {
+    Prefix.forEach(function( prefix ) {
+      const feature = prefix + dim
+
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      div.className = feature
+      div.innerHTML = feature + ': '
+      
+      for (let i = 0; i < 1000; i++) {
+        const value = (dim == 'aspect-ratio')? ((i +1) + '/60') :
+                                               ((dim == 'resolution')? ((i +1) + 'dpi') : ((i +1)*5 + 'px'))
+
+        const rule = '@media (' + feature + ': ' + value + ') { .' + feature + '::after { content: "' + value + '"; } }'
+        style.sheet.insertRule(rule, 0)
+      }
+    })
+    
+    const br = document.createElement('br')
+    document.body.appendChild(br)
+  })
+}
+
+function show_size() {
+  const w = window.innerWidth,
+        h = window.innerHeight
+  document.getElementById('size').innerHTML = 'w: ' + w + 'px, h: ' + h + 'px'
+  document.getElementById('w').style.width  = w -2
+  document.getElementById('h').style.height = h -2
+}
+
+</script>
+<style>
+
+body, div, ::after { font: 3vh courier; }
+
+#w, #h {
+  position: absolute;
+  left: 1px; top: 1px;
+  width:  10px;
+  height: 10px;
+  background-color: gray;
+
+  outline: 1px solid red;
+}
+
+@media (orientation: landscape) { .orientation::after { content: "landscape"; } }
+@media (orientation: portrait ) { .orientation::after { content: "portrait" ; } }
+
+@media (display-mode: fullscreen) { .display-mode::after { content: "fullscreen" ; } }
+@media (display-mode: standalone) { .display-mode::after { content: "standalone" ; } }
+@media (display-mode: minimal-ui) { .display-mode::after { content: "minimal-ui" ; } }
+@media (display-mode: browser   ) { .display-mode::after { content: "browser" ; } }
+
+</style>
+</head>
+<body onload="init()" onresize="show_size()" onclick="show_size()">
+<div id="w"></div>
+<div id="h"></div>
+<div id="size"></div>
+<div class="orientation">orientation: </div>
+<div class="display-mode">display-mode: </div>
+<br>
+</body>
+</html>

@@ -1,7 +1,10 @@
 "use strict"
 
 // return random integer between 0 and N-1, with potential bias (<1: prefers lower indices, =1: uniform, >1: prefers higher indices)
-const random_index = ( N, bias = 1.0 ) => Math.min(N-1, Math.floor(Math.pow(Math.random(), 1/bias) * N))
+function random_index( N, bias ) {
+  if (bias == undefined) bias = 1
+  return Math.min(N-1, Math.floor(Math.pow(Math.random(), 1/bias) * N))
+}
 
 // function anneal( ... )
 // args:
@@ -11,7 +14,10 @@ const random_index = ( N, bias = 1.0 ) => Math.min(N-1, Math.floor(Math.pow(Math
 // params:
 //   .schedule: temperature = f(iter/num_iters)
 
-function anneal( get_proposal, set_proposal, num_iters = 100, num_epochs = 1 ) {
+function anneal( get_proposal, set_proposal, num_iters, num_epochs ) {
+  if (!num_iters) num_iters = 100
+  if (!num_epochs) num_epochs = 1
+  
   // ensure first proposal always accepted
   var cost = Infinity
 
@@ -42,4 +48,4 @@ function anneal( get_proposal, set_proposal, num_iters = 100, num_epochs = 1 ) {
   }
 }
 // set default cooling schedule
-anneal.schedule = x => Math.log1p(x *100)
+anneal.schedule = function( x ) { return Math.log1p(x *100) }
