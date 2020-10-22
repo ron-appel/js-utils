@@ -1,17 +1,26 @@
 <html>
 <head>
-<!-- <script src="https://unpkg.com/peerjs@1.0.0/dist/peerjs.min.js"></script> -->
+<meta charset="utf-8"/>
 <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
 <script src="peergroup.js"></script>
 <script>
 
 const groupId = "1399An07"
-const pg = new PeerGroup(groupId, "ron")
+const pg = new PeerGroup(groupId, "ron:" + (new Date()).toLocaleString())
+pg.connect(true)
 
 pg.recv = function( message ) {
   const date = (new Date()).toLocaleString()
   document.body.innerHTML += '<pre>' + message.id + ' [' + date + ']: ' + message.data + '</pre>'
 }
+
+const onJoinedGroup = pg.onJoinedGroup
+pg.onJoinedGroup = function( Bios ) { onJoinedGroup(Bios); document.title = ' [' + pg.id + ']' }
+
+const onLeftGroup = pg.onLeftGroup
+pg.onLeftGroup = function() { onLeftGroup(); document.title = '[]' }
+
+window.addEventListener('unload', function( event ) { pg.disconnect() })
 
 </script>
 </head>
