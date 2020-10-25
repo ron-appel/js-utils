@@ -14,12 +14,15 @@ pg.onPeerJoined( peerId, peerBio )  // callback notifying the id/bio, upon newly
 pg.onPeerLeft( peerId )             // callback notifying the id, upon peer leaving group
 pg.onReceive( message )             // callback notifying the message, upon receipt
 
+// remember to add onunload event:
+window.addEventListened('unload', function( event ) { pg.disconnect() })
+
   -- data types --
 groupId = ''
  peerId = 0
 peerBio = ''
    Bios = { peerId:peerBio, ... }   // -id signifies peer that has already left group
-message = { id:0, time:0, type:'', data:'', hash:0 }
+message = { id:0, time:0, type:"", data:*, hash:0 }
 
   -- connection protocols --
 host-connect      [new Peer(groupId) -> host.peer]
@@ -52,12 +55,13 @@ peer-private      [peer.conn.send({id:x, data:message}, to:y)]
 
 /* TODO:
   hashes for checksums
+  streams
 */
 
 function PeerGroup( groupId, bio ) {
   // get peer given host
   function getPeer( groupId ) {
-    return new Peer(groupId)//, { host: 'peer-group-server.herokuapp.com', secure: true })
+    return new Peer(groupId, { host: 'peer-group-server.herokuapp.com', secure: true })
   }
   
   // hard-code hostId = 0
